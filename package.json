@@ -1,0 +1,39 @@
+{
+  "name": "email-development-workspace",
+  "version": "1.0.0",
+  "description": "Production-ready email template and signature development workspace",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "client:create": "tsx scripts/create-client.ts",
+    "clients:list": "tsx scripts/list-clients.ts",
+    "build": "tsx scripts/build.ts",
+    "build:all": "tsx scripts/build.ts --all",
+    "validate": "tsx scripts/validate.ts",
+    "validate:all": "tsx scripts/validate.ts --all",
+    "preview": "tsx scripts/preview.ts",
+    "export": "tsx scripts/export-client.ts",
+    "export:all": "tsx scripts/export-client.ts --all",
+    "clean": "tsx scripts/clean.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint scripts/ shared/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "juice": "^12.2.0",
+    "mjml": "^5.4.1",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.5",
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "~5.7.3",
+    "typescript-eslint": "^8.72.0",
+    "vite": "^8.3.5"
+  }
+}

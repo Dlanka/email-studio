@@ -1,0 +1,59 @@
+<mj-section padding="32px 20px" background-color="#f8fafc">
+  <mj-column width="100%">
+    <mj-social font-size="13px" icon-size="24px" mode="horizontal" padding="0 0 16px 0">
+      <mj-social-element
+        name="linkedin"
+        href="https://linkedin.com"
+        background-color="#0a66c2"
+        border-radius="4px"
+      />
+      <mj-social-element
+        name="twitter"
+        href="https://twitter.com"
+        background-color="#1da1f2"
+        border-radius="4px"
+      />
+      <mj-social-element
+        name="facebook"
+        href="https://facebook.com"
+        background-color="#1877f2"
+        border-radius="4px"
+      />
+      <mj-social-element
+        name="github"
+        href="https://github.com"
+        background-color="#24292e"
+        border-radius="4px"
+      />
+    </mj-social>
+
+    <mj-text align="center" font-size="12px" line-height="18px" color="#64748b" padding="0 0 8px 0">
+      &copy; 2026 Acme Corp. All rights reserved.
+    </mj-text>
+    <mj-text
+      align="center"
+      font-size="12px"
+      line-height="18px"
+      color="#64748b"
+      padding="0 0 16px 0"
+    >
+      100 Innovation Way, Suite 400, San Francisco, CA 94105
+    </mj-text>
+
+    <mj-text align="center" font-size="12px" line-height="18px" color="#94a3b8" padding="0">
+      You are receiving this email because you opted in on our website.
+      <br />
+      <a href="https://example.com/preferences" style="color: #64748b; text-decoration: underline"
+        >Preferences</a
+      >
+      &nbsp;&bull;&nbsp;
+      <a href="https://example.com/unsubscribe" style="color: #64748b; text-decoration: underline"
+        >Unsubscribe</a
+      >
+      &nbsp;&bull;&nbsp;
+      <a href="https://example.com/privacy" style="color: #64748b; text-decoration: underline"
+        >Privacy Policy</a
+      >
+    </mj-text>
+  </mj-column>
+</mj-section>

@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Development Workspace - Live Preview</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --border: #334155;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --accent: #38bdf8;
+        --accent-hover: #0ea5e9;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+      /* Top Toolbar */
+      .toolbar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+      .brand-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .controls-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      select,
+      button {
+        background: #0f172a;
+        color: var(--text);
+        border: 1px solid var(--border);
+        padding: 7px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.2s;
+      }
+      select:focus,
+      button:hover {
+        border-color: var(--accent);
+      }
+      .btn-active {
+        background: var(--accent);
+        color: #0f172a;
+        font-weight: 600;
+        border-color: var(--accent);
+      }
+      .badge-pill {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: #334155;
+        color: #cbd5e1;
+      }
+      .badge-warn {
+        background: #78350f;
+        color: #fde68a;
+      }
+      .badge-ok {
+        background: #064e3b;
+        color: #a7f3d0;
+      }
+
+      /* Main Preview Area */
+      .preview-body {
+        flex: 1;
+        display: flex;
+        position: relative;
+        background: #182234;
+        overflow: hidden;
+      }
+      .viewport-stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 20px;
+        overflow-y: auto;
+        transition: background 0.3s;
+      }
+      .stage-light {
+        background: #e2e8f0;
+      }
+      .stage-dark {
+        background: #090d16;
+      }
+      .frame-container {
+        background: #ffffff;
+        box-shadow:
+          0 10px 25px -5px rgba(0, 0, 0, 0.4),
+          0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: width 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 94%;
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #ffffff;
+      }
+
+      /* Sidebar info panel */
+      .sidebar {
+        width: 300px;
+        background: var(--surface);
+        border-left: 1px solid var(--border);
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        overflow-y: auto;
+        font-size: 13px;
+      }
+      .panel-card {
+        background: #0f172a;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px;
+      }
+      .panel-card h4 {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 12px;
+      }
+      .disclaimer-box {
+        font-size: 11px;
+        line-height: 16px;
+        color: #94a3b8;
+        border-left: 3px solid #38bdf8;
+        padding-left: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header Toolbar -->
+    <div class="toolbar">
+      <div class="brand-title">✉️ Email Preview Studio</div>
+
+      <!-- Client & Template Selector -->
+      <div class="controls-group">
+        <label for="clientSelect" style="font-size: 12px; color: var(--text-muted)">Client:</label>
+        <select id="clientSelect" onchange="onClientChange()"></select>
+
+        <label for="deliverableSelect" style="font-size: 12px; color: var(--text-muted)"
+          >Item:</label
+        >
+        <select id="deliverableSelect" onchange="onDeliverableChange()"></select>
+      </div>
+
+      <!-- Viewport Switcher -->
+      <div class="controls-group">
+        <button id="vp-desktop" class="btn-active" onclick="setViewport('650px', this)">
+          Desktop (650px)
+        </button>
+        <button id="vp-mobile" onclick="setViewport('375px', this)">Mobile (375px)</button>
+        <button id="vp-fluid" onclick="setViewport('100%', this)">Fluid (100%)</button>
+      </div>
+
+      <!-- Mode Toggle & Refresh -->
+      <div class="controls-group">
+        <button onclick="toggleTheme()" title="Toggle background theme">🌓 Theme</button>
+        <button onclick="reloadPreview()" title="Reload iframe">🔄 Refresh</button>
+        <button onclick="openExternal()" title="Open in new window">↗ New Tab</button>
+      </div>
+    </div>
+
+    <!-- Content Workspace -->
+    <div class="preview-body">
+      <div class="viewport-stage stage-light" id="viewportStage">
+        <div class="frame-container" id="frameContainer" style="width: 650px">
+          <iframe id="previewFrame" src="about:blank"></iframe>
+        </div>
+      </div>
+
+      <!-- Inspection Sidebar -->
+      <div class="sidebar">
+        <div class="panel-card">
+          <h4>Deliverable Metrics</h4>
+          <div class="info-row">
+            <span>Type:</span>
+            <strong id="metaType">-</strong>
+          </div>
+          <div class="info-row">
+            <span>HTML Size:</span>
+            <strong id="metaSize">-</strong>
+          </div>
+          <div class="info-row">
+            <span>Gmail Clipping:</span>
+            <span id="metaClip" class="badge-pill badge-ok">Safe (&lt;102 KB)</span>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <h4>Actions</h4>
+          <button style="width: 100%; margin-bottom: 8px" onclick="copyCurrentHtml()">
+            📋 Copy Compiled HTML
+          </button>
+          <button style="width: 100%" onclick="viewSource()">🔍 Inspect Source</button>
+        </div>
+
+        <div class="panel-card">
+          <h4>Client Notice</h4>
+          <div class="disclaimer-box">
+            Browser previews render HTML using modern Blink/WebKit engines. Always perform manual
+            test sends to real email clients (Gmail app, Outlook desktop Word engine, Apple Mail).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let manifest = {};
+      let currentClient = "";
+      let currentItem = "";
+
+      async function init() {
+        try {
+          const res = await fetch("/api/manifest");
+          manifest = await res.json();
+
+          const clientSelect = document.getElementById("clientSelect");
+          clientSelect.innerHTML = "";
+
+          const clientSlugs = Object.keys(manifest);
+          if (clientSlugs.length === 0) {
+            alert("No client deliverables found. Run 'yarn build:all' first.");
+            return;
+          }
+
+          clientSlugs.forEach((slug) => {
+            const opt = document.createElement("option");
+            opt.value = slug;
+            opt.textContent = manifest[slug].name || slug;
+            clientSelect.appendChild(opt);
+          });
+
+          // Check URL parameter for requested client
+          const urlParams = new URLSearchParams(window.location.search);
+          const reqClient = urlParams.get("client");
+          if (reqClient && manifest[reqClient]) {
+            clientSelect.value = reqClient;
+          }
+
+          onClientChange();
+        } catch (err) {
+          console.error("Failed to load preview manifest:", err);
+        }
+      }
+
+      function onClientChange() {
+        const clientSelect = document.getElementById("clientSelect");
+        currentClient = clientSelect.value;
+        const clientData = manifest[currentClient] || { items: [] };
+
+        const itemSelect = document.getElementById("deliverableSelect");
+        itemSelect.innerHTML = "";
+
+        clientData.items.forEach((item) => {
+          const opt = document.createElement("option");
+          opt.value = item.path;
+          opt.textContent = item.label;
+          opt.dataset.type = item.type;
+          opt.dataset.size = item.size;
+          itemSelect.appendChild(opt);
+        });
+
+        onDeliverableChange();
+      }
+
+      function onDeliverableChange() {
+        const itemSelect = document.getElementById("deliverableSelect");
+        const selected = itemSelect.options[itemSelect.selectedIndex];
+        if (!selected) return;
+
+        const url = selected.value;
+        const type = selected.dataset.type;
+        const size = selected.dataset.size;
+
+        document.getElementById("previewFrame").src = url;
+        document.getElementById("metaType").textContent = type;
+        document.getElementById("metaSize").textContent = size;
+
+        const sizeNum = parseFloat(size);
+        const isKb = size.includes("KB");
+        const isBig = isKb && sizeNum >= 102;
+
+        const clipBadge = document.getElementById("metaClip");
+        if (isBig) {
+          clipBadge.className = "badge-pill badge-warn";
+          clipBadge.textContent = "Warning (>102 KB)";
+        } else {
+          clipBadge.className = "badge-pill badge-ok";
+          clipBadge.textContent = "Safe (<102 KB)";
+        }
+      }
+
+      function setViewport(width, btn) {
+        document.getElementById("frameContainer").style.width = width;
+        document.querySelectorAll(".controls-group button").forEach((b) => {
+          if (b.id.startsWith("vp-")) b.classList.remove("btn-active");
+        });
+        btn.classList.add("btn-active");
+      }
+
+      function toggleTheme() {
+        const stage = document.getElementById("viewportStage");
+        if (stage.classList.contains("stage-light")) {
+          stage.classList.remove("stage-light");
+          stage.classList.add("stage-dark");
+        } else {
+          stage.classList.remove("stage-dark");
+          stage.classList.add("stage-light");
+        }
+      }
+
+      function reloadPreview() {
+        const frame = document.getElementById("previewFrame");
+        frame.src = frame.src;
+      }
+
+      function openExternal() {
+        const itemSelect = document.getElementById("deliverableSelect");
+        if (itemSelect.value) {
+          window.open(itemSelect.value, "_blank");
+        }
+      }
+
+      async function copyCurrentHtml() {
+        const itemSelect = document.getElementById("deliverableSelect");
+        if (!itemSelect.value) return;
+        try {
+          const res = await fetch(itemSelect.value);
+          const text = await res.text();
+          await navigator.clipboard.writeText(text);
+          alert("HTML copied to clipboard!");
+        } catch (err) {
+          alert("Could not copy HTML: " + err.message);
+        }
+      }
+
+      function viewSource() {
+        const itemSelect = document.getElementById("deliverableSelect");
+        if (itemSelect.value) {
+          window.open("view-source:" + window.location.origin + itemSelect.value, "_blank");
+        }
+      }
+
+      window.onload = init;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "name": "Acme Corp",
+  "slug": "client-acme",
+  "version": "1.0.0",
+  "brand": {
+    "colors": {
+      "primary": "#2563eb",
+      "secondary": "#1e293b",
+      "accent": "#f59e0b",
+      "background": "#f8fafc",
+      "surface": "#ffffff",
+      "textPrimary": "#0f172a",
+      "textSecondary": "#64748b",
+      "border": "#e2e8f0"
+    },
+    "fonts": {
+      "primary": "Arial, Helvetica, sans-serif",
+      "secondary": "Georgia, serif",
+      "fallback": "sans-serif"
+    },
+    "logo": {
+      "path": "assets/logos/logo.png",
+      "alt": "Company Logo",
+      "width": 160,
+      "height": 40,
+      "url": "https://example.com"
+    }
+  },
+  "company": {
+    "name": "Acme Technologies",
+    "website": "https://acme.example.com",
+    "address": "100 Innovation Way, Suite 400, San Francisco, CA 94105",
+    "supportEmail": "support@acme.example.com",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com/company/example",
+      "twitter": "https://twitter.com/example",
+      "github": "https://github.com/example"
+    }
+  },
+  "deliverables": {
+    "templates": ["welcome", "order-confirmation"],
+    "signatures": true
+  },
+  "buildOptions": {
+    "minify": false,
+    "beautify": true,
+    "inlineCss": true,
+    "keepComments": false
+  },
+  "hosting": {
+    "assetBaseUrl": "https://cdn.example.com/assets/"
+  }
+}

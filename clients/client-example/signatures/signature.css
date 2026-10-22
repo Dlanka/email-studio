@@ -1,0 +1,81 @@
+/* Client Signature Specific Styling */
+/* Automatically inlined onto the HTML tables by the build script */
+
+.sig-root {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #333333;
+  margin: 0;
+  padding: 0;
+}
+
+.sig-name {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.sig-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.sig-dept {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  color: #64748b;
+}
+
+.sig-divider-cell {
+  border-right: 2px solid #2563eb;
+  padding-right: 16px;
+  vertical-align: top;
+}
+
+.sig-details-cell {
+  padding-left: 16px;
+  vertical-align: top;
+}
+
+.sig-contact-row {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  color: #475569;
+}
+
+.sig-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.sig-social-table td {
+  padding-right: 10px;
+  vertical-align: middle;
+}
+
+.sig-social-link {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #2563eb;
+  background-color: #eff6ff;
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+.sig-disclaimer {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 15px;
+  color: #94a3b8;
+  padding-top: 12px;
+}

@@ -1,0 +1,34 @@
+{
+  "fullName": "Sarah Jenkins",
+  "jobTitle": "Lead Solutions Architect",
+  "department": "Engineering & Client Services",
+  "companyName": "Acme Corporation",
+  "email": "sarah.jenkins@example.com",
+  "phone": "+1 (555) 234-5678",
+  "mobile": "+1 (555) 987-6543",
+  "websiteUrl": "https://example.com",
+  "websiteLabel": "www.acme-corp-example.com",
+  "address": "100 Innovation Way, Suite 400, San Francisco, CA 94105",
+  "logoUrl": "https://dummyimage.com/280x70/2563eb/ffffff.png&text=ACME+CORP",
+  "logoAlt": "Acme Corporation Logo",
+  "logoWidth": 140,
+  "logoHeight": 35,
+  "socialLinks": [
+    {
+      "platform": "LinkedIn",
+      "url": "https://linkedin.com/company/example",
+      "label": "LinkedIn"
+    },
+    {
+      "platform": "Twitter",
+      "url": "https://twitter.com/example",
+      "label": "Twitter"
+    },
+    {
+      "platform": "GitHub",
+      "url": "https://github.com/example",
+      "label": "GitHub"
+    }
+  ],
+  "disclaimer": "This transmission contains confidential information intended only for the recipient. If you received this in error, please notify the sender immediately."
+}

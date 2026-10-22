@@ -1,0 +1,11 @@
+<mj-section padding="24px 20px" background-color="#ffffff">
+  <mj-column width="100%">
+    <mj-image
+      align="center"
+      width="160px"
+      src="https://dummyimage.com/320x80/2563eb/ffffff.png&text=ACME+CORP"
+      alt="Company Logo"
+      padding="0"
+    />
+  </mj-column>
+</mj-section>

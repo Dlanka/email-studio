@@ -1,0 +1,258 @@
+<!-- Production HTML Email Signature Snippet -->
+<!-- Self-contained table-based layout compatible with Gmail, Outlook, Apple Mail -->
+<table
+  class="sig-root"
+  cellpadding="0"
+  cellspacing="0"
+  border="0"
+  style="
+    border-collapse: collapse;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #333333;
+    max-width: 520px;
+  "
+>
+  <tr>
+    {{#if logoUrl}}
+    <!-- Left Column: Logo -->
+    <td
+      class="sig-divider-cell"
+      style="vertical-align: top; padding-right: 16px; border-right: 2px solid #2563eb"
+    >
+      <a
+        href="{{attr websiteUrl}}"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration: none; display: block"
+      >
+        <img
+          src="{{attr logoUrl}}"
+          alt="{{attr logoAlt}}"
+          width="{{attr logoWidth}}"
+          height="{{attr logoHeight}}"
+          border="0"
+          style="display: block; border: 0; outline: none; width: {{attr logoWidth}}px; height: auto;"
+        />
+      </a>
+    </td>
+    {{/if}}
+
+    <!-- Right Column: Personal & Contact Information -->
+    <td class="sig-details-cell" style="vertical-align: top; padding-left: 16px">
+      <!-- Name and Title -->
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="border-collapse: collapse; width: 100%"
+      >
+        <tr>
+          <td
+            class="sig-name"
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 16px;
+              line-height: 20px;
+              font-weight: bold;
+              color: #0f172a;
+            "
+          >
+            {{fullName}}
+          </td>
+        </tr>
+        <tr>
+          <td
+            class="sig-title"
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 13px;
+              line-height: 18px;
+              color: #2563eb;
+              font-weight: 600;
+              padding-top: 2px;
+            "
+          >
+            {{jobTitle}} {{#if department}}<span style="color: #94a3b8; font-weight: normal"
+              >|</span
+            >
+            <span class="sig-dept" style="color: #64748b; font-weight: normal">{{department}}</span
+            >{{/if}}
+          </td>
+        </tr>
+        <tr>
+          <td
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 13px;
+              line-height: 18px;
+              color: #475569;
+              font-weight: 500;
+              padding-top: 1px;
+            "
+          >
+            {{companyName}}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Contact Details -->
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="border-collapse: collapse; width: 100%; margin-top: 8px"
+      >
+        {{#if phone}}
+        <tr>
+          <td
+            class="sig-contact-row"
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 12px;
+              line-height: 19px;
+              color: #475569;
+            "
+          >
+            <strong style="color: #64748b">Direct:</strong>
+            <a
+              href="tel:{{attr phone}}"
+              class="sig-link"
+              style="color: #2563eb; text-decoration: none"
+              >{{phone}}</a
+            >
+            {{#if mobile}}&nbsp;&nbsp;<span style="color: #cbd5e1">|</span>&nbsp;&nbsp;<strong
+              style="color: #64748b"
+              >Mobile:</strong
+            >
+            <a
+              href="tel:{{attr mobile}}"
+              class="sig-link"
+              style="color: #2563eb; text-decoration: none"
+              >{{mobile}}</a
+            >{{/if}}
+          </td>
+        </tr>
+        {{/if}}
+        <tr>
+          <td
+            class="sig-contact-row"
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 12px;
+              line-height: 19px;
+              color: #475569;
+            "
+          >
+            <strong style="color: #64748b">Email:</strong>
+            <a
+              href="mailto:{{attr email}}"
+              class="sig-link"
+              style="color: #2563eb; text-decoration: underline"
+              >{{email}}</a
+            >
+          </td>
+        </tr>
+        <tr>
+          <td
+            class="sig-contact-row"
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 12px;
+              line-height: 19px;
+              color: #475569;
+            "
+          >
+            <strong style="color: #64748b">Web:</strong>
+            <a
+              href="{{attr websiteUrl}}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="sig-link"
+              style="color: #2563eb; text-decoration: underline"
+              >{{#if websiteLabel}}{{websiteLabel}}{{/if}}{{#unless
+              websiteLabel}}{{websiteUrl}}{{/unless}}</a
+            >
+          </td>
+        </tr>
+        {{#if address}}
+        <tr>
+          <td
+            class="sig-contact-row"
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 11px;
+              line-height: 17px;
+              color: #64748b;
+              padding-top: 2px;
+            "
+          >
+            {{address}}
+          </td>
+        </tr>
+        {{/if}}
+      </table>
+
+      <!-- Social Links (Optional) -->
+      {{#if socialLinks}}
+      <table
+        class="sig-social-table"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="border-collapse: collapse; margin-top: 10px"
+      >
+        <tr>
+          {{#each socialLinks}}
+          <td style="padding-right: 6px">
+            <a
+              href="{{attr url}}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="sig-social-link"
+              style="
+                display: inline-block;
+                padding: 2px 7px;
+                font-size: 11px;
+                font-weight: bold;
+                color: #2563eb;
+                background-color: #eff6ff;
+                border-radius: 3px;
+                text-decoration: none;
+              "
+            >
+              {{label}}
+            </a>
+          </td>
+          {{/each}}
+        </tr>
+      </table>
+      {{/if}}
+
+      <!-- Legal Disclaimer -->
+      {{#if disclaimer}}
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="border-collapse: collapse; width: 100%; margin-top: 10px"
+      >
+        <tr>
+          <td
+            class="sig-disclaimer"
+            style="
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 10px;
+              line-height: 14px;
+              color: #94a3b8;
+            "
+          >
+            {{disclaimer}}
+          </td>
+        </tr>
+      </table>
+      {{/if}}
+    </td>
+  </tr>
+</table>

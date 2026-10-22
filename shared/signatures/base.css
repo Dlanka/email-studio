@@ -1,0 +1,83 @@
+/* Shared Email Signature Base Stylesheet */
+/* Compiled and inlined into client signature HTML via Juice */
+
+body,
+table,
+td,
+p,
+a,
+li,
+blockquote {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+table,
+td {
+  mso-table-lspace: 0pt;
+  mso-table-rspace: 0pt;
+  border-collapse: collapse !important;
+}
+
+img {
+  -ms-interpolation-mode: bicubic;
+  border: 0;
+  height: auto;
+  line-height: 100%;
+  outline: none;
+  text-decoration: none;
+  display: block;
+}
+
+.signature-container {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #333333;
+}
+
+.signature-name {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: bold;
+  color: #111827;
+}
+
+.signature-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 17px;
+  color: #4b5563;
+}
+
+.signature-divider {
+  border-right: 2px solid #2563eb;
+  padding-right: 15px;
+}
+
+.signature-details {
+  padding-left: 15px;
+}
+
+.signature-contact-item {
+  font-size: 12px;
+  line-height: 18px;
+  color: #6b7280;
+}
+
+.signature-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.signature-link:hover {
+  text-decoration: underline;
+}
+
+.signature-disclaimer {
+  font-size: 10px;
+  line-height: 14px;
+  color: #9ca3af;
+  padding-top: 10px;
+}
