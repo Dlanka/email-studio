@@ -1,0 +1,19 @@
+{
+  "fullName": "Sarah Jenkins",
+  "jobTitle": "Real Estate Agent",
+  "department": "Engineering & Client Services",
+  "companyName": "Real Estate Agent Technologies",
+  "email": "hello@reallygreatsite.com",
+  "phone": "+1 (555) 234-5678",
+  "websiteUrl": "https://real-estate-agent.example.com",
+  "websiteLabel": "www.reallygreatsite.com ",
+  "address": "123 Anywhere St., Any City",
+  "logoAlt": "Real Estate Agent Logo",
+  "profileUrl": "../../assets/images/profile.png",
+  "profilePicUrl": "../../assets/images/profile-card.png",
+  "signature": "../../assets/images/signature.png",
+  "iconEmail": "../../assets/images/icon-email.png",
+  "iconLocation": "../../assets/images/icon-location.png",
+  "iconPhone": "../../assets/images/icon-phone.png",
+  "iconWebLink": "../../assets/images/icon-web-link.png"
+}

@@ -1,9 +1,11 @@
 import http from "node:http";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { existsSync, createReadStream } from "node:fs";
+import { existsSync, createReadStream, watch } from "node:fs";
 import {
   WORKSPACE_ROOT,
+  CLIENTS_DIR,
+  SHARED_DIR,
   listClientSlugs,
   validateSlug,
   getClientDir,
@@ -13,6 +15,7 @@ import { buildClient } from "./build.js";
 import type { ClientConfig } from "../shared/types.js";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const sseClients = new Set<http.ServerResponse>();
 
 const MIME_TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -115,11 +118,98 @@ async function buildManifest(): Promise<Record<string, ClientManifest>> {
   return manifest;
 }
 
+function notifyReload(slug?: string): void {
+  const msg = `data: ${JSON.stringify({ type: "reload", slug })}\n\n`;
+  for (const client of sseClients) {
+    try {
+      client.write(msg);
+    } catch {
+      sseClients.delete(client);
+    }
+  }
+}
+
+function startFileWatcher(): void {
+  const debounceTimers = new Map<string, NodeJS.Timeout>();
+
+  const triggerRebuild = (clientSlug: string) => {
+    const existing = debounceTimers.get(clientSlug);
+    if (existing) clearTimeout(existing);
+
+    debounceTimers.set(
+      clientSlug,
+      setTimeout(async () => {
+        try {
+          logger.info(`[Auto-Rebuild] Changes detected in "${clientSlug}". Compiling...`);
+          await buildClient(clientSlug);
+          notifyReload(clientSlug);
+          logger.success(`[Auto-Rebuild] "${clientSlug}" rebuilt successfully. Browser updated!`);
+        } catch (err) {
+          logger.error(`[Auto-Rebuild] Build error for "${clientSlug}": ${(err as Error).message}`);
+        }
+      }, 250)
+    );
+  };
+
+  try {
+    watch(CLIENTS_DIR, { recursive: true }, (_eventType, filename) => {
+      if (!filename) return;
+      const normalized = filename.replace(/\\/g, "/");
+      // Ignore dist, .git, .gitkeep, and temporary editor swap files
+      if (
+        normalized.includes("/dist/") ||
+        normalized.startsWith("dist/") ||
+        normalized.includes(".git") ||
+        normalized.endsWith("~") ||
+        normalized.endsWith(".tmp")
+      ) {
+        return;
+      }
+
+      const parts = normalized.split("/");
+      const slug = parts[0];
+      if (slug && slug !== "_template") {
+        triggerRebuild(slug);
+      }
+    });
+
+    if (existsSync(SHARED_DIR)) {
+      watch(SHARED_DIR, { recursive: true }, async (_eventType, filename) => {
+        if (!filename) return;
+        logger.info(`[Auto-Rebuild] Changes detected in shared files (${filename})...`);
+        const slugs = await listClientSlugs();
+        for (const s of slugs) {
+          triggerRebuild(s);
+        }
+      });
+    }
+
+    logger.info("  • Live file watcher: Active (auto-rebuilds and updates browser)");
+  } catch (err) {
+    logger.warn(`Could not initialize live file watcher: ${(err as Error).message}`);
+  }
+}
+
 async function startServer(initialSlug?: string): Promise<void> {
   const server = http.createServer(async (req, res) => {
     try {
       const parsedUrl = new URL(req.url || "/", `http://localhost:${PORT}`);
       const pathname = decodeURIComponent(parsedUrl.pathname);
+
+      // API: Live Reload SSE endpoint
+      if (pathname === "/api/live-reload") {
+        res.writeHead(200, {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        });
+        res.write(`data: ${JSON.stringify({ type: "connected" })}\n\n`);
+        sseClients.add(res);
+        req.on("close", () => {
+          sseClients.delete(res);
+        });
+        return;
+      }
 
       // API: Preview Manifest
       if (pathname === "/api/manifest") {
@@ -172,6 +262,8 @@ async function startServer(initialSlug?: string): Promise<void> {
     logger.info("  • Desktop (650px), Mobile (375px), and Fluid viewports");
     logger.info("  • Live HTML size & Gmail 102KB clipping check");
     logger.info("  • One-click copy HTML button");
+    logger.info("  • Live auto-rebuild & browser auto-reload on file changes");
+    startFileWatcher();
     logger.info("\nPress Ctrl+C in your terminal to stop the preview server.");
   });
 }

@@ -26,7 +26,7 @@ img {
   line-height: 100%;
   outline: none;
   text-decoration: none;
-  display: block;
+  /* display: block; */
 }
 
 .signature-container {

@@ -202,6 +202,19 @@
 
       <!-- Mode Toggle & Refresh -->
       <div class="controls-group">
+        <span
+          id="liveReloadStatus"
+          class="badge-pill"
+          style="
+            background: #064e3b;
+            color: #a7f3d0;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+          "
+          title="Changes you save in your templates or signatures auto-rebuild and reload instantly"
+          >⚡ Auto-Reload Active</span
+        >
         <button onclick="toggleTheme()" title="Toggle background theme">🌓 Theme</button>
         <button onclick="reloadPreview()" title="Reload iframe">🔄 Refresh</button>
         <button onclick="openExternal()" title="Open in new window">↗ New Tab</button>
@@ -256,6 +269,39 @@
       let manifest = {};
       let currentClient = "";
       let currentItem = "";
+      let currentViewport = "650px";
+
+      function updateUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        if (currentClient) params.set("client", currentClient);
+
+        const itemSelect = document.getElementById("deliverableSelect");
+        if (itemSelect && itemSelect.value) {
+          const filename = itemSelect.value.split("/").pop();
+          params.set("item", filename);
+        }
+
+        params.set("viewport", currentViewport);
+
+        const stage = document.getElementById("viewportStage");
+        const isDark = stage && stage.classList.contains("stage-dark");
+        params.set("theme", isDark ? "dark" : "light");
+
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        window.history.replaceState({}, "", newUrl);
+
+        try {
+          localStorage.setItem(
+            "emailStudio_state",
+            JSON.stringify({
+              client: currentClient,
+              item: itemSelect?.value ? itemSelect.value.split("/").pop() : "",
+              viewport: currentViewport,
+              theme: isDark ? "dark" : "light",
+            })
+          );
+        } catch (e) {}
+      }
 
       async function init() {
         try {
@@ -278,20 +324,54 @@
             clientSelect.appendChild(opt);
           });
 
-          // Check URL parameter for requested client
+          // Retrieve query parameters or fallback to localStorage
           const urlParams = new URLSearchParams(window.location.search);
-          const reqClient = urlParams.get("client");
+          let savedState = {};
+          try {
+            savedState = JSON.parse(localStorage.getItem("emailStudio_state") || "{}");
+          } catch (e) {}
+
+          const reqClient = urlParams.get("client") || savedState.client;
+          const reqItem = urlParams.get("item") || savedState.item;
+          const reqViewport = urlParams.get("viewport") || savedState.viewport || "650px";
+          const reqTheme = urlParams.get("theme") || savedState.theme || "light";
+
           if (reqClient && manifest[reqClient]) {
             clientSelect.value = reqClient;
           }
 
-          onClientChange();
+          // Restore Viewport
+          currentViewport = reqViewport;
+          const frameContainer = document.getElementById("frameContainer");
+          frameContainer.style.width = reqViewport;
+          document.querySelectorAll(".controls-group button").forEach((b) => {
+            if (b.id.startsWith("vp-")) b.classList.remove("btn-active");
+          });
+          if (reqViewport === "375px") {
+            document.getElementById("vp-mobile")?.classList.add("btn-active");
+          } else if (reqViewport === "100%") {
+            document.getElementById("vp-fluid")?.classList.add("btn-active");
+          } else {
+            document.getElementById("vp-desktop")?.classList.add("btn-active");
+          }
+
+          // Restore Theme
+          const stage = document.getElementById("viewportStage");
+          if (reqTheme === "dark") {
+            stage.classList.remove("stage-light");
+            stage.classList.add("stage-dark");
+          } else {
+            stage.classList.remove("stage-dark");
+            stage.classList.add("stage-light");
+          }
+
+          onClientChange(reqItem);
         } catch (err) {
           console.error("Failed to load preview manifest:", err);
         }
       }
 
-      function onClientChange() {
+      function onClientChange(targetItemName) {
         const clientSelect = document.getElementById("clientSelect");
         currentClient = clientSelect.value;
         const clientData = manifest[currentClient] || { items: [] };
@@ -307,6 +387,17 @@
           opt.dataset.size = item.size;
           itemSelect.appendChild(opt);
         });
+
+        // Try to match targetItemName if requested
+        if (targetItemName && itemSelect.options.length > 0) {
+          for (let i = 0; i < itemSelect.options.length; i++) {
+            const optVal = itemSelect.options[i].value;
+            if (optVal.endsWith(targetItemName) || optVal.includes(targetItemName)) {
+              itemSelect.selectedIndex = i;
+              break;
+            }
+          }
+        }
 
         onDeliverableChange();
       }
@@ -336,14 +427,18 @@
           clipBadge.className = "badge-pill badge-ok";
           clipBadge.textContent = "Safe (<102 KB)";
         }
+
+        updateUrlParams();
       }
 
       function setViewport(width, btn) {
+        currentViewport = width;
         document.getElementById("frameContainer").style.width = width;
         document.querySelectorAll(".controls-group button").forEach((b) => {
           if (b.id.startsWith("vp-")) b.classList.remove("btn-active");
         });
         btn.classList.add("btn-active");
+        updateUrlParams();
       }
 
       function toggleTheme() {
@@ -355,6 +450,7 @@
           stage.classList.remove("stage-dark");
           stage.classList.add("stage-light");
         }
+        updateUrlParams();
       }
 
       function reloadPreview() {
@@ -389,7 +485,47 @@
         }
       }
 
-      window.onload = init;
+      function setupLiveReload() {
+        if (!window.EventSource) return;
+        const liveSource = new EventSource("/api/live-reload");
+        liveSource.onmessage = async (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === "reload") {
+              const res = await fetch("/api/manifest");
+              manifest = await res.json();
+              reloadPreview();
+              // Update sizes in sidebar
+              const itemSelect = document.getElementById("deliverableSelect");
+              if (itemSelect && itemSelect.selectedIndex >= 0) {
+                const selected = itemSelect.options[itemSelect.selectedIndex];
+                const clientData = manifest[currentClient] || { items: [] };
+                const updatedItem = clientData.items.find((i) => i.path === selected.value);
+                if (updatedItem) {
+                  selected.dataset.size = updatedItem.size;
+                  document.getElementById("metaSize").textContent = updatedItem.size;
+                }
+              }
+              const livePill = document.getElementById("liveReloadStatus");
+              if (livePill) {
+                livePill.textContent = "⚡ Auto-Updated!";
+                livePill.style.background = "#15803d";
+                setTimeout(() => {
+                  livePill.textContent = "⚡ Auto-Reload Active";
+                  livePill.style.background = "#064e3b";
+                }, 2000);
+              }
+            }
+          } catch (e) {
+            console.error("Live reload error:", e);
+          }
+        };
+      }
+
+      window.onload = () => {
+        init();
+        setupLiveReload();
+      };
     </script>
   </body>
 </html>

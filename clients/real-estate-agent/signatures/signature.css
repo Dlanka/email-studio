@@ -1,0 +1,101 @@
+/* Client Signature Specific Styling */
+/* Automatically inlined onto the HTML tables by the build script */
+
+.sig-root {
+  font-family:
+    "Montserrat",
+    Arial,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #333333;
+  margin: 0;
+  padding: 0;
+  max-width: 400px;
+  width: 100%;
+}
+
+.td-bg-layer {
+  background: linear-gradient(to bottom, #1a191a 46%, #ededee 0%);
+  padding: 0;
+  margin: 0;
+}
+
+.sig-container {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.sig-tb-inner {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.sig-profile {
+  width: 160px;
+  padding: 0;
+  margin: 0;
+  padding-top: 16px;
+  margin: 0;
+  text-align: center;
+}
+
+.img-profile {
+  width: 140px;
+  object-fit: cover;
+}
+
+.td-right {
+  width: 240px;
+  padding: 0;
+  margin: 0;
+}
+
+.sig-top {
+  width: 100%;
+  color: #ededee;
+  height: 46%;
+  padding-left: 16px;
+}
+
+.sig-bottom {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 16px;
+  height: 54%;
+}
+
+.sig-signature {
+  width: 146px;
+}
+
+.sig-job-title {
+  font-size: 9px;
+  font-weight: bold;
+  color: #ededee;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  padding-left: 6px;
+}
+
+.sig-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sig-info-text {
+  font-size: 11px;
+  color: #1a191a;
+  padding-left: 8px;
+  text-decoration: none;
+}
